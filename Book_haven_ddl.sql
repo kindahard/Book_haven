@@ -205,3 +205,47 @@ ALTER TABLE reservation_details
     ADD CONSTRAINT FK_res_details_book FOREIGN KEY (book_id)
     REFERENCES book (book_id);
 GO
+
+
+
+-- ============================================
+-- CREATE LOGIN AND USER FOR FLASK APP
+-- ============================================
+
+-- 1. Create SQL Server login at the server level
+USE master;
+GO
+
+IF EXISTS (SELECT * FROM sys.sql_logins WHERE name = 'flask_user')
+    DROP LOGIN flask_user;
+GO
+
+CREATE LOGIN flask_user 
+WITH PASSWORD = '123456';
+GO
+
+
+-- 2. Create database user in Book_haven
+USE Book_haven;
+GO
+
+IF EXISTS (SELECT * FROM sys.database_principals WHERE name = 'flask_user')
+    DROP USER flask_user;
+GO
+
+CREATE USER flask_user FOR LOGIN flask_user;
+GO
+
+
+-- 3. Grant permissions to the user
+GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::dbo TO flask_user;
+GO
+
+
+-- 4. Set default database for the login 
+USE master;
+GO
+ALTER LOGIN flask_user WITH DEFAULT_DATABASE = Book_haven;
+GO
+
+PRINT 'Flask user created and permissions granted successfully.';
