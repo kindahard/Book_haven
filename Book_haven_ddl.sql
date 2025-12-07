@@ -22,12 +22,14 @@ CREATE TABLE author (
     fname VARCHAR(100),
     lname VARCHAR(100)
 );
+GO
 
 -- Table: category
 CREATE TABLE category (
     category_id INT IDENTITY(1,1),
     category_name VARCHAR(100) NOT NULL
 );
+GO
 
 -- Table: member
 CREATE TABLE member (
@@ -41,6 +43,7 @@ CREATE TABLE member (
     created_at DATETIME2 NOT NULL DEFAULT GETDATE(),
     modified_at DATETIME2 DEFAULT GETDATE()
 );
+GO
 
 -- Table: staff
 CREATE TABLE staff (
@@ -48,11 +51,13 @@ CREATE TABLE staff (
     fname VARCHAR(100) NOT NULL,
     lname VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
-    email VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,    
+    password VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL,
     created_at DATETIME2 NOT NULL DEFAULT GETDATE(),
     modified_at DATETIME2 DEFAULT GETDATE()
 );
+GO
 
 -- Table: book
 CREATE TABLE book (
@@ -65,6 +70,7 @@ CREATE TABLE book (
     created_at DATETIME2 NOT NULL DEFAULT GETDATE(),
     modified_at DATETIME2 DEFAULT GETDATE()
 );
+GO
 
 -- Table: reservation
 CREATE TABLE reservation (
@@ -78,18 +84,21 @@ CREATE TABLE reservation (
     created_at DATETIME2 NOT NULL DEFAULT GETDATE(),
     modified_at DATETIME2 DEFAULT GETDATE()
 );
+GO
 
 -- Table: book_author 
 CREATE TABLE book_author (
     book_id INT NOT NULL,
     author_id INT NOT NULL
 );
+GO
 
 -- Table: book_category 
 CREATE TABLE book_category (
     book_id INT NOT NULL,
     category_id INT NOT NULL
 );
+GO
 
 -- Table: reservation_details 
 CREATE TABLE reservation_details (
@@ -97,93 +106,102 @@ CREATE TABLE reservation_details (
     book_id INT NOT NULL,
     position_in_queue INT NOT NULL
 );
+GO
 
-
--- ---------------------------------
--- 2.1. PRIMARY KEY Constraints
--- ---------------------------------
-
-ALTER TABLE author
-    ADD CONSTRAINT PK_author PRIMARY KEY (author_id);
-
-ALTER TABLE category
-    ADD CONSTRAINT PK_category PRIMARY KEY (category_id);
-
-ALTER TABLE member
-    ADD CONSTRAINT PK_member PRIMARY KEY (member_id);
-
-ALTER TABLE staff
-    ADD CONSTRAINT PK_staff PRIMARY KEY (staff_id);
-
-ALTER TABLE book
-    ADD CONSTRAINT PK_book PRIMARY KEY (book_id);
-
-ALTER TABLE reservation
-    ADD CONSTRAINT PK_reservation PRIMARY KEY (reservation_id);
-
--- Composite Primary Keys
-ALTER TABLE book_author
-    ADD CONSTRAINT PK_book_author PRIMARY KEY (book_id, author_id);
-
-ALTER TABLE book_category
-    ADD CONSTRAINT PK_book_category PRIMARY KEY (book_id, category_id);
-
-ALTER TABLE reservation_details
-    ADD CONSTRAINT PK_reservation_details PRIMARY KEY (reservation_id, book_id);
 
 
 -- ---------------------------------
--- 2.2. UNIQUE Constraints
+-- PRIMARY KEY Constraints
 -- ---------------------------------
 
-ALTER TABLE category
-    ADD CONSTRAINT UQ_category_name UNIQUE (category_name);
+ALTER TABLE author ADD CONSTRAINT PK_author PRIMARY KEY (author_id);
+GO
 
-ALTER TABLE member
-    ADD CONSTRAINT UQ_member_phone UNIQUE (phone);
-ALTER TABLE member
-    ADD CONSTRAINT UQ_member_email UNIQUE (email);
+ALTER TABLE category ADD CONSTRAINT PK_category PRIMARY KEY (category_id);
+GO
 
-ALTER TABLE staff
-    ADD CONSTRAINT UQ_staff_phone UNIQUE (phone);
-ALTER TABLE staff
-    ADD CONSTRAINT UQ_staff_email UNIQUE (email);
+ALTER TABLE member ADD CONSTRAINT PK_member PRIMARY KEY (member_id);
+GO
+
+ALTER TABLE staff ADD CONSTRAINT PK_staff PRIMARY KEY (staff_id);
+GO
+
+ALTER TABLE book ADD CONSTRAINT PK_book PRIMARY KEY (book_id);
+GO
+
+ALTER TABLE reservation ADD CONSTRAINT PK_reservation PRIMARY KEY (reservation_id);
+GO
+
+ALTER TABLE book_author ADD CONSTRAINT PK_book_author PRIMARY KEY (book_id, author_id);
+GO
+
+ALTER TABLE book_category ADD CONSTRAINT PK_book_category PRIMARY KEY (book_id, category_id);
+GO
+
+ALTER TABLE reservation_details ADD CONSTRAINT PK_reservation_details PRIMARY KEY (reservation_id, book_id);
+GO
 
 
 -- ---------------------------------
--- 2.3. FOREIGN KEY Constraints
+-- UNIQUE Constraints
 -- ---------------------------------
 
--- Table: reservation
+ALTER TABLE category ADD CONSTRAINT UQ_category_name UNIQUE (category_name);
+GO
+
+ALTER TABLE member ADD CONSTRAINT UQ_member_phone UNIQUE (phone);
+GO
+
+ALTER TABLE member ADD CONSTRAINT UQ_member_email UNIQUE (email);
+GO
+
+ALTER TABLE staff ADD CONSTRAINT UQ_staff_phone UNIQUE (phone);
+GO
+
+ALTER TABLE staff ADD CONSTRAINT UQ_staff_email UNIQUE (email);
+GO
+
+
+-- ---------------------------------
+-- FOREIGN KEY Constraints
+-- ---------------------------------
+
 ALTER TABLE reservation
     ADD CONSTRAINT FK_reservation_member FOREIGN KEY (member_id)
     REFERENCES member (member_id);
+GO
 
--- staff_id is nullable in the model
 ALTER TABLE reservation
     ADD CONSTRAINT FK_reservation_staff FOREIGN KEY (staff_id)
     REFERENCES staff (staff_id);
+GO
 
--- Table: book_author
 ALTER TABLE book_author
     ADD CONSTRAINT FK_book_author_book FOREIGN KEY (book_id)
     REFERENCES book (book_id);
+GO
+
 ALTER TABLE book_author
     ADD CONSTRAINT FK_book_author_author FOREIGN KEY (author_id)
     REFERENCES author (author_id);
+GO
 
--- Table: book_category
 ALTER TABLE book_category
     ADD CONSTRAINT FK_book_category_book FOREIGN KEY (book_id)
     REFERENCES book (book_id);
+GO
+
 ALTER TABLE book_category
     ADD CONSTRAINT FK_book_category_category FOREIGN KEY (category_id)
     REFERENCES category (category_id);
+GO
 
--- Table: reservation_details
 ALTER TABLE reservation_details
     ADD CONSTRAINT FK_res_details_reservation FOREIGN KEY (reservation_id)
     REFERENCES reservation (reservation_id);
+GO
+
 ALTER TABLE reservation_details
     ADD CONSTRAINT FK_res_details_book FOREIGN KEY (book_id)
     REFERENCES book (book_id);
+GO
