@@ -263,3 +263,27 @@ ALTER TABLE reservation_details
     FOREIGN KEY (copy_id)
     REFERENCES book_copy(copy_id);
 GO
+
+
+-- Create the SQL Server Login (The credential to connect to the server)
+USE master;
+GO
+CREATE LOGIN flask_book_user WITH
+    PASSWORD = '123456',
+    CHECK_POLICY = ON,      
+    DEFAULT_DATABASE = [Book_haven];
+GO
+
+--  Create the Database User
+USE [Book_haven];
+GO
+
+CREATE USER [flask_book_user] FOR LOGIN [flask_book_user];
+GO
+
+-- Step 3: Grant Permissions (Allows the user to read and write data)
+-- Granting only necessary permissions for a web application is a security best practice.
+EXEC sp_addrolemember 'db_datareader', 'flask_book_user';
+EXEC sp_addrolemember 'db_datawriter', 'flask_book_user';
+-- GRANT EXECUTE TO flask_book_user;
+GO
