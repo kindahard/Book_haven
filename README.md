@@ -12,8 +12,6 @@ A comprehensive library management system with data analytics and business intel
 - [Database Schema](#database-schema)
 - [Data Pipeline](#data-pipeline)
 - [Power BI Analytics](#power-bi-analytics)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## 🎯 Overview
 
